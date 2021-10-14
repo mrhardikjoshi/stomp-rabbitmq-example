@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2></h2>
+<p id="demo"></p>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+  client = new StompJs.Client({
+    brokerURL: 'ws://localhost:15674/ws',
+    connectHeaders: {
+      login: 'guest',
+      passcode: 'guest',
+    },
+    debug: function (str) {
+      console.log('STOMP DEBUG: ' + str);
+    },
+    reconnectDelay: 200,
+  });
+  client.activate();
+
+  window.setTimeout(clientReady, 5000, client);
+
+  function clientReady(client) {
+    callback = function (message) {
+      // called when the client receives a STOMP message from the server
+      if (message.body) {
+        alert('got message=>' + message );
+      } else {
+        alert('got empty message');
+      }
+    };
+    var subscription = client.subscribe('/amq/queue/reply_queue', callback);
+
+    client.publish({
+      binaryBody: 'binaryData',
+      destination: '/amq/queue/rpc_queue',
+      headers: { 'content-type': 'application/octet-stream', 'reply-to': 'reply_queue' },
+      body: '2'
+    });
+  }
+
+</script>
+
+</body>
+</html>
+
+
+
+
