@@ -13,6 +13,7 @@ class Server
   def start(queue_name)
     @queue = channel.queue(queue_name)
     @exchange = channel.default_exchange
+    @channel.queue('reply_queue')
     subscribe_to_queue
   end
 
