@@ -31,7 +31,7 @@
         alert('got empty message');
       }
     };
-    var subscription = client.subscribe('/amq/queue/reply_queue', callback);
+    var subscription = client.subscribe('/queue/reply_queue', callback);
 
     client.publish({
       binaryBody: 'binaryData',

@@ -13,7 +13,8 @@ class Server
   def start(queue_name)
     @queue = channel.queue(queue_name)
     @exchange = channel.default_exchange
-    @channel.queue('reply_queue')
+    # disabled this line, as queue is getting created from FE side
+    # @channel.queue('reply_queue', durable: false, auto_delete: true)
     subscribe_to_queue
   end
 
