@@ -26,12 +26,15 @@
     callback = function (message) {
       // called when the client receives a STOMP message from the server
       if (message.body) {
-        alert('got message=>' + message );
+        alert('got message=>' + JSON.stringify(message) );
       } else {
         alert('got empty message');
       }
     };
-    var subscription = client.subscribe('/queue/reply_queue', callback);
+
+    // uncomment to subscribe before publish call, queue must not be prefixed with `/amq/`
+    // as that will fail if queue is not created already
+    // var subscription = client.subscribe('/queue/reply_queue', callback);
 
     client.publish({
       binaryBody: 'binaryData',
@@ -39,6 +42,12 @@
       headers: { 'content-type': 'application/octet-stream', 'reply-to': 'reply_queue' },
       body: '2'
     });
+
+    // subscribe after the publish event with `reply-to` header
+    // we need to be carefull and test edge cases
+    // e.g. what if `reply-to` header above has not yet created the queue, and following subscribe is called
+    var subscription = client.subscribe('/queue/reply_queue', callback);
+
   }
 
 </script>
