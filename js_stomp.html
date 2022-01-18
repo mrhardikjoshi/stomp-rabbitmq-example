@@ -37,16 +37,17 @@
     // var subscription = client.subscribe('/queue/reply_queue', callback);
 
     client.publish({
-      binaryBody: 'binaryData',
-      destination: '/amq/queue/rpc_queue',
-      headers: { 'content-type': 'application/octet-stream', 'reply-to': 'reply_queue' },
-      body: '2'
+      // binaryBody: 'binaryData',
+      destination: '/amq/queue/api_v2',
+      headers: { 'reply-to': '/temp-queue/reply_queue_name' },
+      body: JSON.stringify({
+              'controller': 'SomeController',
+              'action': 'index'
+      })
     });
 
-    // subscribe after the publish event with `reply-to` header
-    // we need to be carefull and test edge cases
-    // e.g. what if `reply-to` header above has not yet created the queue, and following subscribe is called
-    var subscription = client.subscribe('/queue/reply_queue', callback);
+    // following doesn't work with temp-queue
+    var subscription = client.subscribe('/amq/queue/reply_queue_name', callback);
 
   }
 
